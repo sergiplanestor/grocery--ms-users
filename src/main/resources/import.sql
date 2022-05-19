@@ -1,0 +1,1 @@
+-- INSERT INTO user(email, name, alias, date_created, date_last_login) VALUES('', '', '', )
