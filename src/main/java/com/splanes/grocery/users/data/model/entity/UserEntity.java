@@ -1,21 +1,22 @@
-package com.splanes.grocery.users.data.model;
+package com.splanes.grocery.users.data.model.entity;
 
+import com.splanes.grocery.users.data.model.common.DomainMapperEntity;
 import com.splanes.grocery.users.data.model.common.Uuid;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.splanes.grocery.users.domain.model.user.User;
+import com.splanes.grocery.users.domain.security.model.UserAuthentication;
+import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity(name = "user")
-@Getter
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserEntity {
+public class UserEntity extends DomainMapperEntity<User> implements UserAuthentication {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,23 +27,34 @@ public class UserEntity {
     @AttributeOverride(name = "value", column = @Column(name = "uuid", nullable = false, unique = true))
     private Uuid uuid;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "alias")
+    @Column(name = "alias", nullable = false)
     private String alias;
 
-    @Column(name = "date_created")
+    @Column(name = "pwd", nullable = false)
+    private String pwd;
+
+    @Column(name = "role", nullable = false)
+    private String role;
+
+    @Column(name = "date_created", nullable = false)
     private String dateCreated;
 
     @Column(name = "date_last_login")
     private String dateLastUse;
 
-    @OneToOne(mappedBy = "user", cascade = {CascadeType.ALL})
-    private AuthEntity auth;
+
+    @Override
+    public String getPassword() {
+        return pwd;
+    }
+
+    @Override
+    public String getUsername() {
+        return alias;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -55,5 +67,17 @@ public class UserEntity {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+
+    @Override
+    public User mapToDomain() {
+
+        return User.builder()
+                .id()
+                .alias()
+                .email()
+                .dateCreated()
+                .dateLastUse()
     }
 }

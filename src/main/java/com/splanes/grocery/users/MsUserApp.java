@@ -1,4 +1,4 @@
-package com.splanes.grocery.users.app;
+package com.splanes.grocery.users;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
