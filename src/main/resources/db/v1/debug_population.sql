@@ -1,8 +1,28 @@
+-- CUSTOMER
+INSERT INTO
+    tbl_customer(email, username, first_name, last_name)
+VALUES
+    ('test@xyz.com', 'Testy', 'Tester', 'Dev'),
+    ('splanes@protonmail.com', 'CoolDaddy', 'Sergi', 'Planes')
+;
 
--- USER
+-- CUSTOMER IDENTITY
+INSERT INTO
+    tbl_customer_identity(uuid, pwd)
+VALUES
+    ((SELECT c.uuid FROM tbl_customer c WHERE c.email = 'test@xyz.com'), 'Test1234!'),
+    ((SELECT c.uuid FROM tbl_customer c WHERE c.email = 'splanes@protonmail.com'), '96ed7h83')
+;
 
-INSERT INTO user(uuid, email, alias, pwd, role, date_created, date_last_login) VALUES('badc6943-50c2-4812-9397-eb777ffb56e0','ms.users.internal@grocery.com','InternalAuthorizedUser','=U5SPQ_UnII6Goi7Qs!','sudo','2022-05-22T21:52:41.452','2022-05-22T21:52:41.452'),
-
-INSERT INTO user(uuid, email, alias, pwd, role, date_created, date_last_login) VALUES('1ddae3aa-1128-47fe-bd93-be5d6380067c', 'test@xyz.com', 'Testy', 'Test1234!', 'client', '2022-05-22T21:52:41.452', '2022-05-22T21:52:41.452');
-
--- ·················································································································· --
+-- CUSTOMER IDENTITY ROLES
+INSERT INTO
+    tbl_customer_authority_roles(customer_uuid, role_uuid)
+VALUES
+    (
+        (SELECT UUID_BY_EMAIL('test@xyz.com', 'tbl_customer')),
+        (SELECT r.uuid FROM tbl_authority_role r WHERE r.role = 'CUSTOMER')
+    ),
+    (
+        UUID_BY_EMAIL('splanes@protonmail.com', 'tbl_customer'),
+        (SELECT r.uuid FROM tbl_authority_role r WHERE r.role = 'CUSTOMER')
+    ),
